@@ -18,7 +18,8 @@ To install the News Filter extension, follow these steps:
 3. Enable "Developer mode" at the top right corner.
 4. Click "Load unpacked" and select the downloaded folder.
 5. Clone the server [repository](https://github.com/hattima-tim/remove-bad-content-server).
-6. Run `npm install` and then `npm start`
+6. In the cloned server repository, create a .env file in the root directory and add a line with `GEMINI_API_KEY=<your_gemini_api_key>` where `<your_gemini_api_key>` is your actual Gemini API key.
+7. Run `npm install` and then `npm start`
 
 # Usage
 
