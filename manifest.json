@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "News Filter",
+  "description": "Extension to remove news about rape, murder, suicide, death from bangladeshi newspaper Prothom Alo.",
+  "version": "1.0",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["tabs", "storage"],
+  "host_permissions": ["https://www.prothomalo.com/*"],
+  "icons": {
+    "16": "assets/16.png",
+    "32": "assets/32.png",
+    "48": "assets/48.png",
+    "128": "assets/128.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content.js"],
+      "css": ["style.css"],
+      "matches": ["https://www.prothomalo.com/*"],
+      "run_at": "document_end"
+    }
+  ]
+}

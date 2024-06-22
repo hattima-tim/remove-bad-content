@@ -1,0 +1,105 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+  padding-top: 0px;
+  margin: 0px;
+}
+
+#remove_bad_news_toaster {
+  top: 16px;
+  right: 24px;
+  left: auto;
+  bottom: auto;
+  font-size: 0.875rem;
+  padding: 10px 16px;
+  border: 0;
+  background-color: #181818;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: #0003 0 2px 4px;
+}
+
+.blur-images img {
+  filter: blur(6px);
+}
+
+.remove_news_extension_header {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid #d2d2d2;
+  padding: 0.5rem;
+  align-items: baseline;
+}
+
+.remove_news_extension_header h1 {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.75rem;
+  color: rgb(9, 9, 11);
+  margin: 0px;
+  white-space: nowrap;
+}
+
+.removedNewsCount {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: rgb(24, 24, 27);
+  color: white;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove_news_option_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem;
+}
+
+.remove_news_option_container span {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.remove_news_toggle_container {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.blurImageButton {
+  background-color: white;
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 200px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s;
+  border: 1px solid rgb(24, 24, 27);
+}
+
+.blurImageButton:before {
+  position: absolute;
+  content: "";
+  background-color: rgb(24, 24, 27);
+  border: 1px solid rgb(24, 24, 27);
+  width: 14px;
+  height: 13px;
+  border-radius: 200px;
+  margin: 5px;
+  transition: 0.2s;
+}
+
+input:checked + .blurImageButton:before {
+  transform: translate(22px);
+}
+
+input {
+  display: none;
+}
