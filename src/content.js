@@ -1,3 +1,22 @@
+const banglaBadNewsKeywords = [
+  "ধর্ষণ",
+  "খুনি",
+  "খুন",
+  "মরদেহ",
+  "ধর্ষক",
+  "লাশ",
+  "হত্যা",
+  "আত্মহত্যা",
+  "নিহত",
+  "ধর্ষণের",
+  "প্রতিশোধ",
+  "নৃশংস",
+  "জখম",
+  "শ্লীলতাহানি",
+  "ধর্ষিত",
+  "যৌন",
+];
+
 let isModifyingDOM = false;
 
 let allNewsLinksText;
@@ -62,6 +81,19 @@ const removeContent = (link) => {
   contentArea?.remove();
 };
 
+const storeRemoveNewsCount = async (newsLinks) => {
+  const prevRemovedNewsCount = await chrome.storage.local.get([
+    "removedNewsCount",
+  ]);
+
+  await chrome.storage.local.set({
+    removedNewsCount:
+      (prevRemovedNewsCount.removedNewsCount ?? 0) + newsLinks.length,
+  });
+
+  await chrome.runtime.sendMessage({ removedNewsCount: newsLinks.length });
+};
+
 const handleRemovingContent = () => {
   if (isModifyingDOM) return;
   isModifyingDOM = true;
@@ -83,17 +115,20 @@ const handleRemovingContent = () => {
 
     newsLinks.forEach(removeContent);
 
-    const prevRemovedNewsCount = await chrome.storage.local.get([
-      "removedNewsCount",
-    ]);
-
-    await chrome.storage.local.set({
-      removedNewsCount:
-        (prevRemovedNewsCount.removedNewsCount ?? 0) + newsLinks.length,
-    });
-
-    await chrome.runtime.sendMessage({ removedNewsCount: newsLinks.length });
+    storeRemoveNewsCount(newsLinks);
   }, 2000);
+};
+
+const handleRemovingContentWithoutAI = (allNewsLinks) => {
+  const newsLinks = Array.from(allNewsLinks).filter((newsLink) => {
+    return banglaBadNewsKeywords.some((keyword) =>
+      newsLink.innerText.includes(keyword)
+    );
+  });
+
+  newsLinks.forEach(removeContent);
+
+  storeRemoveNewsCount(newsLinks);
 };
 
 const invalidNodes = ["IMG", "SCRIPT", "NOSCRIPT", "OPTION"];
@@ -114,6 +149,8 @@ window.addEventListener("load", () => {
         invalidNodes.includes(Array.from(mutation.addedNodes)[0]?.nodeName)
       )
         return;
+
+      handleRemovingContentWithoutAI(allNewsLinks);
 
       clearTimeout(timeoutId);
 
