@@ -39,33 +39,41 @@ chrome.runtime.onMessage.addListener(async (request) => {
   setToggleBlurImageValue(request);
 });
 
-async function run() {
-  const response = await fetch("http://localhost:3000/ai", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text: allNewsLinksText }),
-  });
-
+const showErrorToaster = () => {
   const toaster = document.getElementById("remove_bad_news_toaster");
-  if (!response.ok) {
-    if (toaster) {
-      toaster.textContent = "Something went wrong, please try again later";
+  if (toaster) {
+    toaster.textContent = "Something went wrong, please try again later";
 
-      setTimeout(() => {
-        toaster.remove();
-        isModifyingDOM = false;
-      }, 3000);
-    }
-    return [];
+    setTimeout(() => {
+      toaster.remove();
+      isModifyingDOM = false;
+    }, 3000);
   }
+};
 
-  toaster?.remove();
-  isModifyingDOM = false;
+async function getBadNewsTitlesFromAI() {
+  try {
+    const response = await fetch("http://localhost:3000/ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: allNewsLinksText }),
+    });
 
-  const text = await response.text();
-  return JSON.parse(text);
+    if (!response.ok) {
+      showErrorToaster();
+      return [];
+    }
+
+    toaster?.remove();
+    isModifyingDOM = false;
+
+    const text = await response.text();
+    return JSON.parse(text);
+  } catch (error) {
+    showErrorToaster();
+  }
 }
 
 const removeContent = (link) => {
@@ -107,7 +115,7 @@ const handleRemovingContent = () => {
   toaster?.showPopover();
 
   setTimeout(async () => {
-    const badNewsTitles = await run();
+    const badNewsTitles = await getBadNewsTitlesFromAI();
 
     const newsLinks = badNewsTitles.flatMap((text) =>
       Array.from(allNewsLinks).filter((link) => link.innerText === text)
