@@ -79,6 +79,7 @@ async function getBadNewsTitlesFromAI() {
 
 const removeContent = (link) => {
   const contentArea =
+    link.closest(".wide-story-card") ||
     link.closest(".news_item_content") ||
     link.closest(".news_with_item") ||
     link.closest(".related-story-wrapper") ||
