@@ -25,7 +25,10 @@ let allNewsLinks;
 
 const setToggleBlurImageValue = async (value) => {
   const toggleValue = await chrome.storage.local.get(["blurAllImages"]);
-  const shouldBlur = value ? value.blurAllImages : toggleValue.blurAllImages;
+
+  const shouldBlur = value?.blurAllImages
+    ? value.blurAllImages
+    : toggleValue.blurAllImages;
 
   if (shouldBlur) {
     document.body.classList.add("blur-images");
@@ -37,7 +40,11 @@ const setToggleBlurImageValue = async (value) => {
 setToggleBlurImageValue();
 
 chrome.runtime.onMessage.addListener(async (request) => {
-  setToggleBlurImageValue(request);
+  if ("removeNewsWithAi" in request) {
+    window.location.reload();
+  } else {
+    setToggleBlurImageValue(request);
+  }
 });
 
 const showErrorToaster = () => {
@@ -46,7 +53,7 @@ const showErrorToaster = () => {
     toaster.textContent = "Something went wrong, please try again later";
 
     setTimeout(() => {
-      toaster.remove();
+      toaster.hidePopover();
       isModifyingDOM = false;
     }, 3000);
   }
@@ -67,13 +74,15 @@ async function getBadNewsTitlesFromAI() {
       return [];
     }
 
-    toaster?.remove();
+    const toaster = document.getElementById("remove_bad_news_toaster");
+    toaster?.hidePopover();
     isModifyingDOM = false;
 
     const text = await response.text();
     return JSON.parse(text);
   } catch (error) {
     showErrorToaster();
+    return [];
   }
 }
 
@@ -108,12 +117,7 @@ const handleRemovingContent = () => {
   if (isModifyingDOM) return;
   isModifyingDOM = true;
 
-  const newsContainer = document.querySelector(".container");
-  const toaster = document.createElement("div");
-  toaster.id = "remove_bad_news_toaster";
-  toaster.popover = "manual";
-  toaster.textContent = "News being removed....";
-  newsContainer?.appendChild(toaster);
+  const toaster = document.getElementById("remove_bad_news_toaster");
   toaster?.showPopover();
 
   setTimeout(async () => {
@@ -144,35 +148,50 @@ const handleRemovingContentWithoutAI = (allNewsLinks) => {
 const invalidNodes = ["IMG", "SCRIPT", "NOSCRIPT", "OPTION"];
 let timeoutId;
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
+  const newsContainer = document.querySelector(".container");
+  const toaster = document.createElement("div");
+  toaster.id = "remove_bad_news_toaster";
+  toaster.popover = "manual";
+  toaster.textContent = "News being removed....";
+  newsContainer?.appendChild(toaster);
+
+  const removeNewsWithAi = await chrome.storage.local.get(["removeNewsWithAi"]);
+  removeNewsWithAi.removeNewsWithAi && toaster.showPopover();
+
   const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      allNewsLinks = document.querySelectorAll("a");
-      allNewsLinksText = Array.from(allNewsLinks).map(
-        (link) => link.querySelector("span")?.innerText ?? ""
-      );
+    const lastMutationValue = mutations[mutations.length - 1];
 
-      if (
-        !mutation.addedNodes ||
-        mutation.removedNodes.length > 0 ||
-        Array.from(mutation.addedNodes)[0]?.id === "remove_bad_news_toaster" ||
-        invalidNodes.includes(Array.from(mutation.addedNodes)[0]?.nodeName)
+    allNewsLinks = document.querySelectorAll("a");
+    allNewsLinksText = Array.from(allNewsLinks).map(
+      (link) => link.querySelector("span")?.innerText ?? ""
+    );
+
+    if (
+      !lastMutationValue.addedNodes ||
+      lastMutationValue.removedNodes.length > 0 ||
+      Array.from(lastMutationValue.addedNodes)[0]?.id ===
+        "remove_bad_news_toaster" ||
+      invalidNodes.includes(
+        Array.from(lastMutationValue.addedNodes)[0]?.nodeName
       )
-        return;
+    )
+      return;
 
-      handleRemovingContentWithoutAI(allNewsLinks);
+    handleRemovingContentWithoutAI(allNewsLinks);
 
+    if (removeNewsWithAi.removeNewsWithAi) {
       clearTimeout(timeoutId);
 
       timeoutId = setTimeout(handleRemovingContent, 1000);
-    });
+    }
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
-  handleRemovingContent();
 
   window.navigation.addEventListener("navigate", () => {
     observer.observe(document.body, { childList: true, subtree: true });
-    handleRemovingContent();
+
+    removeNewsWithAi.removeNewsWithAi && toaster.showPopover();
   });
 });

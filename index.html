@@ -12,12 +12,21 @@
       <span class="removedNewsCount"></span>
     </div>
     <div class="remove_news_option_container">
-      <span> Blur all images </span>
+      <label for="blurImageInput"> Blur all images </label>
       <div class="remove_news_toggle_container">
         <input type="checkbox" id="blurImageInput" />
-        <label for="blurImageInput" class="blurImageButton"></label>
+        <label for="blurImageInput" class="filterNewsToggleBtn"></label>
       </div>
     </div>
+
+    <div class="remove_news_option_container">
+      <label for="removeNewsWithAi"> Remove all negative news </label>
+      <div class="remove_news_toggle_container">
+        <input type="checkbox" id="removeNewsWithAi" />
+        <label for="removeNewsWithAi" class="filterNewsToggleBtn"></label>
+      </div>
+    </div>
+
     <script src="/src/popup.js"></script>
   </body>
 </html>
