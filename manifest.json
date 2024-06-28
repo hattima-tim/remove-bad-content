@@ -16,7 +16,7 @@
   },
   "content_scripts": [
     {
-      "js": ["src/content.js"],
+      "js": ["dist/content.js"],
       "css": ["style.css"],
       "matches": ["https://www.prothomalo.com/*"],
       "run_at": "document_end"
