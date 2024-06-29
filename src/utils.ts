@@ -1,4 +1,20 @@
 let isModifyingDOM = false;
+let allNewsLinks: NodeListOf<HTMLAnchorElement>;
+let allNewsLinksText: string[];
+
+const englishBadNewsKeywords = [
+  "rape",
+  "murder",
+  "corpse",
+  "rapist",
+  "dead",
+  "death",
+  "suicide",
+  "kill",
+  "molestation",
+  "sexual",
+  "die",
+];
 
 const banglaBadNewsKeywords = [
   "ধর্ষণ",
@@ -87,7 +103,8 @@ export const removeContent = (link: HTMLAnchorElement) => {
     link.closest(".also-read") ||
     link.closest(".news_with_no_image") ||
     link.closest(".numbered-story-headline") ||
-    link.closest(".card-with-image-zoom");
+    link.closest(".card-with-image-zoom") ||
+    link.closest(".card");
 
   contentArea?.remove();
 };
@@ -122,12 +139,14 @@ const storeRemoveNewsCount = async (newsLinks: HTMLAnchorElement[]) => {
   await chrome.runtime.sendMessage({ removedNews: newsDataToSave.length });
 };
 
-export const handleRemovingContent = async (
-  allNewsLinksText: string[],
-  allNewsLinks: NodeListOf<HTMLAnchorElement>
-) => {
+export const handleRemovingContent = async () => {
   if (isModifyingDOM) return;
   isModifyingDOM = true;
+
+  allNewsLinks = document.querySelectorAll("a");
+  allNewsLinksText = Array.from(allNewsLinks).map(
+    (link) => link.textContent ?? ""
+  );
 
   const toaster = document.getElementById("remove_bad_news_toaster");
   if (toaster) {
@@ -146,12 +165,20 @@ export const handleRemovingContent = async (
   storeRemoveNewsCount(newsLinks);
 };
 
-export const handleRemovingContentWithoutAI = (
-  allNewsLinks: NodeListOf<HTMLAnchorElement>
-) => {
+export const handleRemovingContentWithoutAI = () => {
+  allNewsLinks = document.querySelectorAll("a");
+  allNewsLinksText = Array.from(allNewsLinks).map(
+    (link) => link.querySelector("span")?.innerText ?? ""
+  );
+
   const newsLinks = Array.from(allNewsLinks).filter((newsLink) => {
-    return banglaBadNewsKeywords.some((keyword) =>
-      newsLink.innerText.includes(keyword)
+    let keywordsToUseForFiltering =
+      window.location.hostname === "www.prothomalo.com"
+        ? banglaBadNewsKeywords
+        : englishBadNewsKeywords;
+
+    return keywordsToUseForFiltering.some((keyword) =>
+      newsLink.innerText.toLowerCase().includes(keyword)
     );
   });
 

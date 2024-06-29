@@ -7,7 +7,11 @@
     "default_popup": "index.html"
   },
   "permissions": ["tabs", "storage"],
-  "host_permissions": ["https://www.prothomalo.com/*"],
+  "host_permissions": [
+    "https://www.prothomalo.com/*",
+    "https://www.thedailystar.net/*",
+    "https://www.tbsnews.net/*"
+  ],
   "icons": {
     "16": "assets/16.png",
     "32": "assets/32.png",
@@ -18,7 +22,11 @@
     {
       "js": ["dist/content.js"],
       "css": ["style.css"],
-      "matches": ["https://www.prothomalo.com/*"],
+      "matches": [
+        "https://www.prothomalo.com/*",
+        "https://www.thedailystar.net/*",
+        "https://www.tbsnews.net/*"
+      ],
       "run_at": "document_end"
     }
   ]
