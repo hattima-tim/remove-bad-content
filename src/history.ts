@@ -8,7 +8,7 @@ interface NewsData {
 }
 [];
 
-const headers = ["Date", "News Paper", "News"];
+const headers = ["Date", "Newspaper", "News"];
 
 async function createNewsHistoryTable() {
   const { removedNews = [] } = (await chrome.storage.local.get([
