@@ -10,7 +10,8 @@
   "host_permissions": [
     "https://www.prothomalo.com/*",
     "https://www.thedailystar.net/*",
-    "https://www.tbsnews.net/*"
+    "https://www.tbsnews.net/*",
+    "https://www.aljazeera.com/*"
   ],
   "icons": {
     "16": "assets/16.png",
@@ -25,7 +26,8 @@
       "matches": [
         "https://www.prothomalo.com/*",
         "https://www.thedailystar.net/*",
-        "https://www.tbsnews.net/*"
+        "https://www.tbsnews.net/*",
+        "https://www.aljazeera.com/*"
       ],
       "run_at": "document_end"
     }

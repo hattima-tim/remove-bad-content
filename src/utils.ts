@@ -104,7 +104,8 @@ export const removeContent = (link: HTMLAnchorElement) => {
     link.closest(".news_with_no_image") ||
     link.closest(".numbered-story-headline") ||
     link.closest(".card-with-image-zoom") ||
-    link.closest(".card");
+    link.closest(".card") || // for the daily star, tbs news
+    link.closest("article"); // for all jazeera
 
   contentArea?.remove();
 };
