@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [],
   build: {
     rollupOptions: {
-      input: ["src/content.ts", "src/popup.ts"],
+      input: ["src/content.ts", "src/popup.ts", "src/history.ts"],
       output: {
         entryFileNames: "[name].js",
         format: "esm",

@@ -1,0 +1,65 @@
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0px;
+  background-color: rgba(244, 244, 245, 0.5);
+}
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: rgb(9, 9, 11);
+  border-bottom: 1px solid rgb(228, 228, 231);
+  padding: 1rem 1.5rem;
+  margin: 0px;
+  background-color: white;
+}
+
+#tableContainer {
+  padding: 3rem 5rem;
+  height: 75vh;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  padding: 2rem 1rem;
+  background-color: white;
+}
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  position: sticky;
+  top: 0px;
+  background-color: #f2f2f2;
+  color: rgb(110, 110, 119);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+#date {
+  color: rgb(110, 110, 119);
+  font-size: 0.875rem;
+  line-height: 1.75rem;
+}
+
+a,
+#hostname {
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  color: rgb(9, 9, 11);
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}

@@ -1,8 +1,6 @@
 const updatePopoverData = async () => {
   const { blurAllImages } = await chrome.storage.local.get(["blurAllImages"]);
-  const { removedNewsCount = 0 } = await chrome.storage.local.get([
-    "removedNewsCount",
-  ]);
+  const { removedNews = [] } = await chrome.storage.local.get(["removedNews"]);
   const removeNewsWithAi = await chrome.storage.local.get(["removeNewsWithAi"]);
 
   const removeNewsWithAiInput = document.getElementById(
@@ -15,7 +13,7 @@ const updatePopoverData = async () => {
     ".removedNewsCount"
   ) as HTMLElement;
 
-  removedNewsCountSpan.textContent = removedNewsCount;
+  removedNewsCountSpan.textContent = removedNews.length;
   blurImageInput.checked = blurAllImages ?? false;
   removeNewsWithAiInput.checked = removeNewsWithAi.removeNewsWithAi;
 };
@@ -47,12 +45,14 @@ removeNewsWithAiBtn?.addEventListener("change", () =>
 
 chrome.runtime.onMessage.addListener(async ({ removedNewsCount }) => {
   if (removedNewsCount !== undefined) {
-    const { removedNewsCount: prevRemovedNews = 0 } =
-      await chrome.storage.local.get(["removedNewsCount"]);
+    const { removedNews: prevRemovedNews } = await chrome.storage.local.get([
+      "removedNews",
+    ]);
     const removedNewsCountSpan = document.querySelector(
       ".removedNewsCount"
     ) as HTMLElement;
 
-    removedNewsCountSpan.textContent = removedNewsCount + prevRemovedNews;
+    removedNewsCountSpan.textContent =
+      removedNewsCount + prevRemovedNews.length;
   }
 });

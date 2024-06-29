@@ -22,13 +22,16 @@ const banglaBadNewsKeywords = [
 
 const getBadNewsTitlesFromAI = async (allNewsLinksText: string[]) => {
   try {
-    const response = await fetch("http://localhost:3000/ai", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: allNewsLinksText }),
-    });
+    const response = await fetch(
+      "https://remove-bad-content-server.onrender.com/ai",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: allNewsLinksText }),
+      }
+    );
 
     if (!response.ok) {
       showErrorToaster();
@@ -90,16 +93,33 @@ export const removeContent = (link: HTMLAnchorElement) => {
 };
 
 const storeRemoveNewsCount = async (newsLinks: HTMLAnchorElement[]) => {
-  const prevRemovedNewsCount = await chrome.storage.local.get([
-    "removedNewsCount",
+  const { removedNews: prevRemovedNews = [] } = await chrome.storage.local.get([
+    "removedNews",
   ]);
 
-  await chrome.storage.local.set({
-    removedNewsCount:
-      (prevRemovedNewsCount.removedNewsCount ?? 0) + newsLinks.length,
+  const newsDataToSave = newsLinks.map((link) => {
+    return {
+      date: new Intl.DateTimeFormat("en", {
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }).format(new Date()),
+      link: {
+        text: link.textContent,
+        url: link.href,
+      },
+      hostname: window.location.hostname,
+    };
   });
 
-  await chrome.runtime.sendMessage({ removedNewsCount: newsLinks.length });
+  await chrome.storage.local.set({
+    removedNews: [...prevRemovedNews, ...newsDataToSave],
+  });
+
+  await chrome.runtime.sendMessage({ removedNews: newsDataToSave.length });
 };
 
 export const handleRemovingContent = async (
