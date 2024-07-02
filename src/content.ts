@@ -62,11 +62,11 @@ window.addEventListener("load", async () => {
   observer.observe(document.body, { childList: true, subtree: true });
 
   // @ts-ignore
-  window.navigation.addEventListener("navigate", (e) => {
-    if (e.navigationType === "reload") return;
+  // window.navigation.addEventListener("navigate", (e) => {
+  //   if (e.navigationType === "reload") return;
 
-    observer.observe(document.body, { childList: true, subtree: true });
+  //   observer.observe(document.body, { childList: true, subtree: true });
 
-    removeNewsWithAi.removeNewsWithAi && toaster.showPopover();
-  });
+  //   removeNewsWithAi.removeNewsWithAi && toaster.showPopover();
+  // });
 });
