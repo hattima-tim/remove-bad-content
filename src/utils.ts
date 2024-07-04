@@ -157,8 +157,8 @@ export const handleRemovingContent = async () => {
 
   const badNewsTitles = await getBadNewsTitlesFromAI(allNewsLinksText);
 
-  const newsLinks = badNewsTitles.flatMap((text: string) =>
-    Array.from(allNewsLinks).filter((link) => link.innerText === text)
+  const newsLinks = Array.from(allNewsLinks).filter((link) =>
+    badNewsTitles.includes(link.innerText)
   );
 
   newsLinks.forEach(removeContent);
