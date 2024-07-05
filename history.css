@@ -85,3 +85,9 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+
+@media (max-width: 500px) {
+  #tableContainer {
+    padding: 0px;
+  }
+}
